@@ -7,7 +7,8 @@ import datetime
 import simpleobsws
 try:
     from RPi import GPIO
-except (RuntimeError, ModuleNotFoundError):
+except (RuntimeError, ModuleNotFoundError) as e:
+    print(f'Failed to load rpi.gpio: {e}\nUsing dummy GPIO...')
     class GPIO:
         'Just print GPIO controls'
         # pylint: disable=C0116
