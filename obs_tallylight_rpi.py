@@ -35,7 +35,7 @@ class Tally:
         self.assigns = {}
         for gpio_source in args.assign:
             gpio, source = gpio_source.split('=', 1)
-            self.assigns[source] = gpio
+            self.assigns[source] = int(gpio)
 
         self.source_active_states = {}
 
@@ -96,6 +96,9 @@ class Tally:
             except simpleobsws.NotIdentifiedError as e:
                 if not self.args.daemon:
                     raise e
+            except TypeError:
+                # Probably the source was not found for some reason. Just ignore it.
+                pass
             except Exception as e: # pylint: disable=W0718
                 if not self.args.daemon:
                     raise e
