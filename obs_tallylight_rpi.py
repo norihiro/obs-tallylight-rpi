@@ -7,8 +7,8 @@ import datetime
 import simpleobsws
 try:
     from RPi import GPIO
-except (RuntimeError, ModuleNotFoundError) as e:
-    print(f'Failed to load rpi.gpio: {e}\nUsing dummy GPIO...')
+except (RuntimeError, ModuleNotFoundError) as e_rpi_gpio:
+    print(f'Failed to load rpi.gpio: {e_rpi_gpio}\nUsing dummy GPIO...')
     class GPIO:
         'Just print GPIO controls'
         # pylint: disable=C0116
@@ -32,6 +32,7 @@ class Tally:
         self.studio_mode = False
         self.ws = None
         self.args = args
+        self.last_received = None
 
         self.assigns = {}
         for gpio_source in args.assign:
@@ -65,6 +66,7 @@ class Tally:
                 return
             raise e
         ws.register_event_callback(self._on_active_state_changed, 'InputActiveStateChanged')
+        self._update_last_received()
         self.ws = ws
         await self.check_state()
 
