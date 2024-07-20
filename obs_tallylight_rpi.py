@@ -124,9 +124,11 @@ class Tally:
         for _, gpio in self.assigns.items():
             gpio_drives[gpio] = False
 
+        # Multiple sources may point to the same GPIO.
+        # Let's iterate source_active_states everytime it was updated.
         for name, active in self.source_active_states.items():
             if active:
-                gpio_drives[self.assigns[name]] = active
+                gpio_drives[self.assigns[name]] = True
 
         for gpio, active in gpio_drives.items():
             if self.gpio_drives_prev[gpio] == active:
